@@ -2,27 +2,29 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AcampaDentro Teens</title>
+  <title>Admin - Perguntas</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="https://i.imgur.com/xxCrown.png"> <!-- Use a coroa aqui -->
 </head>
 <body>
   <div class="container">
-    <h1>AcampaDentro Teens 💥</h1>
-    <h2>Arautos do Rei 👑</h2>
-    <p>Envie sua pergunta anônima 👇</p>
-    <form method="POST" action="/api/pergunta">
-      <textarea name="pergunta" placeholder="Digite sua pergunta..." required></textarea>
-      <button type="submit">Enviar</button>
-    </form>
-    <p class="feedback">
-      <script>
-        if (location.search.includes('enviado=1')) {
-          document.write('✅ Sua pergunta foi enviada!');
-        }
-      </script>
-    </p>
+    <h1>Perguntas Recebidas</h1>
+    <ul id="lista"></ul>
+    <br>
+    <a href="index.html">Voltar</a>
   </div>
+  <script>
+    const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
+    const lista = document.getElementById("lista");
+
+    if (perguntas.length === 0) {
+      lista.innerHTML = "<li>Nenhuma pergunta registrada.</li>";
+    } else {
+      perguntas.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = `${new Date(p.data).toLocaleString()} → ${p.texto}`;
+        lista.appendChild(li);
+      });
+    }
+  </script>
 </body>
 </html>
