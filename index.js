@@ -15,6 +15,7 @@ function salvarPergunta() {
   });
 
   localStorage.setItem("perguntas", JSON.stringify(perguntas));
+  const genero = document.getElementById("genero").value;
 
   input.value = "";
   document.getElementById("feedback").textContent = "✅ Sua pergunta foi enviada!";
