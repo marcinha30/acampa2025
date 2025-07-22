@@ -19,3 +19,10 @@ function salvarPergunta() {
   input.value = "";
   document.getElementById("feedback").textContent = "✅ Sua pergunta foi enviada!";
 }
+function limparPerguntas() {
+  if (confirm("Tem certeza que deseja apagar todas as perguntas?")) {
+    localStorage.removeItem("perguntas");
+    document.getElementById("lista").innerHTML = "<li>Nenhuma pergunta registrada.</li>";
+    alert("Perguntas apagadas com sucesso.");
+  }
+}
