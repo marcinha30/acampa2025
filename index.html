@@ -2,48 +2,22 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>AcampaDentro Teens</title>
+  <title>Acampa Teens</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <img src="logo.png" alt="Logo AcampaDentro" style="width: 200px; display: block; margin: 0 auto 20px;">
-    <h1>Adolescentes da Rua Guarani 👑</h1>
-    <select id="genero" required>
-  <option value="">Selecione seu genero</option>
-  <option value="menino">Menino</option>
-  <option value="menina">Menina</option>
-</select>
-<br><br>
-    <p>Envie sua pergunta anônima 👇</p>
-    <textarea id="pergunta" placeholder="Digite sua pergunta..." required></textarea>
-    <button onclick="salvarPergunta()">Enviar</button>
-    <p class="feedback" id="feedback"></p>
-    <br>
-<a href="admin.html" style="display: inline-block; padding: 10px 20px; background: #fff; color: #4B0082; border-radius: 8px; text-decoration: none; font-weight: bold;">Acessar perguntas (admin)</a>
+    <h1>Deixe sua pergunta</h1>
+    <form id="form-pergunta">
+      <label><input type="radio" name="genero" value="Menino"> Menino</label>
+      <label><input type="radio" name="genero" value="Menina"> Menina</label>
+      <textarea id="pergunta" placeholder="Digite sua pergunta..."></textarea>
+      <button type="submit">Enviar</button>
+      <p id="feedback" class="feedback"></p>
+    </form>
   </div>
-  <script>
-    function salvarPergunta() {
-      const textarea = document.getElementById("pergunta");
-      const texto = textarea.value.trim();
-      if (!texto) {
-        document.getElementById("feedback").textContent = "Digite uma pergunta antes de enviar.";
-        return;
-      }
-
-      const pergunta = {
-        texto,
-        data: new Date().toISOString()
-      };
-
-      const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
-      perguntas.push(pergunta);
-      localStorage.setItem("perguntas", JSON.stringify(perguntas));
-
-      textarea.value = "";
-      document.getElementById("feedback").textContent = "Pergunta enviada com sucesso!";
-    }
-  </script>
+  <script src="index.js"></script>
 </body>
 </html>
