@@ -70,6 +70,12 @@ function baixarTXT() {
   link.download = "perguntas.txt";
   link.click();
 }
+    function limparPerguntas() {
+      if (confirm("Tem certeza que deseja apagar todas as perguntas?")) {
+        localStorage.removeItem("perguntas");
+        document.getElementById("lista").innerHTML = "<li>Nenhuma pergunta registrada.</li>";
+        alert("Perguntas apagadas com sucesso.");
+    }
     }
   </script>
 </body>
