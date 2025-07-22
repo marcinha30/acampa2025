@@ -8,20 +8,25 @@
 </head>
 <body>
   <div class="container">
-    <img src="logo.png" alt="Logo do AcampaDentro" style="width: 200px; margin: 20px auto; display: block;">
+    <img src="logo.png" alt="Logo AcampaDentro" style="width: 200px; display: block; margin: 0 auto 20px;">
     <h1>Perguntas Recebidas</h1>
     <div id="tela-login">
       <input type="password" id="senha" placeholder="Digite a senha de admin" />
       <button onclick="verificarSenha()">Entrar</button>
       <p id="erro-senha" style="color: red;"></p>
+      <br><br>
+      <a href="index.html" class="botao-voltar">Voltar</a>
     </div>
 
     <div id="painel-admin" style="display: none;">
-      <ul id="lista"></ul>
+      <ul id="lista-meninos"></ul>
+      <ul id="lista-meninas"></ul>
       <br>
-      <button onclick="baixarJSON()">📁 Exportar perguntas</button>
+      <button onclick="baixarTXT('menino')">📄 Exportar Meninos (TXT)</button>
+      <button onclick="baixarTXT('menina')">📄 Exportar Meninas (TXT)</button>
       <br><br>
-      <a href="index.html">Voltar</a>
+      <button onclick="limparPerguntas()" style="background-color: red; color: white;">🗑️ Limpar perguntas</button>
+      <a href="index.html" class="botao-voltar">Voltar</a>
     </div>
   </div>
 
@@ -41,26 +46,51 @@
 
     function carregarPerguntas() {
       const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
-      const lista = document.getElementById("lista");
+      const listaMeninos = document.getElementById("lista-meninos");
+      const listaMeninas = document.getElementById("lista-meninas");
+      listaMeninos.innerHTML = "<h3>Meninos</h3>";
+      listaMeninas.innerHTML = "<h3>Meninas</h3>";
 
       if (perguntas.length === 0) {
-        lista.innerHTML = "<li>Nenhuma pergunta registrada.</li>";
+        listaMeninos.innerHTML += "<li>Nenhuma pergunta registrada.</li>";
+        listaMeninas.innerHTML += "<li>Nenhuma pergunta registrada.</li>";
       } else {
         perguntas.forEach(p => {
           const li = document.createElement("li");
           li.textContent = `${new Date(p.data).toLocaleString()} → ${p.texto}`;
-          lista.appendChild(li);
+          if (p.genero === "menino") {
+            listaMeninos.appendChild(li);
+          } else {
+            listaMeninas.appendChild(li);
+          }
         });
       }
     }
 
-    function baixarJSON() {
-      const dados = localStorage.getItem("perguntas") || "[]";
-      const blob = new Blob([dados], { type: "application/json" });
+    function baixarTXT(genero) {
+      const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]")
+        .filter(p => p.genero === genero);
+
+      let conteudo = "";
+      perguntas.forEach((p, i) => {
+        conteudo += `#${i + 1} - ${new Date(p.data).toLocaleString()} → ${p.texto}
+`;
+      });
+
+      const blob = new Blob([conteudo], { type: "text/plain" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = "perguntas.json";
+      link.download = `perguntas_${genero}.txt`;
       link.click();
+    }
+
+    function limparPerguntas() {
+      if (confirm("Tem certeza que deseja apagar todas as perguntas?")) {
+        localStorage.removeItem("perguntas");
+        document.getElementById("lista-meninos").innerHTML = "<li>Nenhuma pergunta registrada.</li>";
+        document.getElementById("lista-meninas").innerHTML = "<li>Nenhuma pergunta registrada.</li>";
+        alert("Perguntas apagadas com sucesso.");
+      }
     }
   </script>
 </body>
