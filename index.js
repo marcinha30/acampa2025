@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const resposta = await fetch("https://script.google.com/macros/s/AKfycbyNaw-cgiqGa8GIkrYHy7ADPm2r8aDHysaKO06mbGRqofj1ZxF3-YravUDI4uYBOopa-A/exec", {
+      await fetch("https://script.google.com/macros/s/AKfycbyNaw-cgiqGa8GIkrYHy7ADPm2r8aDHysaKO06mbGRqofj1ZxF3-YravUDI4uYBOopa-A/exec", {
         method: "POST",
         mode: "no-cors",
         headers: {
@@ -36,8 +36,4 @@ document.addEventListener("DOMContentLoaded", () => {
       feedback.textContent = "Erro ao enviar pergunta. Tente novamente.";
     }
   });
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> 04ce9ea234600a453368829aa8ee2c860877e496
