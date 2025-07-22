@@ -4,6 +4,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    // Desativa o textarea até selecionar o gênero
+perguntaInput.disabled = true;
+
+// Habilita quando escolher menino ou menina
+const generoRadios = document.querySelectorAll('input[name="genero"]');
+generoRadios.forEach(radio => {
+  radio.addEventListener("change", () => {
+    perguntaInput.disabled = false;
+    perguntaInput.focus();
+  });
+});
 
     const texto = document.getElementById("pergunta").value.trim();
     const genero = document.querySelector('input[name="genero"]:checked')?.value || "Não informado";
