@@ -18,17 +18,15 @@
       <a href="index.html" class="botao-voltar">Voltar</a>
     </div>
 
-    <div id="painel-admin" style="display: none;">
-      <ul id="lista-meninos"></ul>
-      <ul id="lista-meninas"></ul>
-      <br>
-      <button onclick="baixarTXT('menino')">📄 Exportar Meninos (TXT)</button>
-      <button onclick="baixarTXT('menina')">📄 Exportar Meninas (TXT)</button>
-      <br><br>
-      <button onclick="limparPerguntas()" style="background-color: red; color: white;">🗑️ Limpar perguntas</button>
-      <a href="index.html" class="botao-voltar">Voltar</a>
-    </div>
-  </div>
+   <div id="painel-admin" style="display: none;">
+  <ul id="lista"></ul>
+  <br>
+  <button onclick="baixarTXT('menino')">📄 Exportar Meninos (TXT)</button>
+  <button onclick="baixarTXT('menina')">📄 Exportar Meninas (TXT)</button>
+  <br><br>
+  <button onclick="limparPerguntas()" style="background-color: red; color: white;">🗑️ Limpar perguntas</button>
+  <a href="index.html" class="botao-voltar">Voltar</a>
+</div>
 
   <script>
     const senhaCorreta = "acampa*";
