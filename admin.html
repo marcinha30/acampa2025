@@ -5,25 +5,10 @@
   <title>Admin - Perguntas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-  <style>
-    .bubble {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 15px;
-      padding: 12px 16px;
-      margin-bottom: 12px;
-      text-align: left;
-      font-size: 15px;
-    }
-    .bubble time {
-      display: block;
-      font-size: 12px;
-      opacity: 0.7;
-      margin-top: 6px;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
+    <img src="logo.png" alt="Logo do AcampaDentro" style="width: 200px; margin: 20px auto; display: block;">
     <h1>Perguntas Recebidas</h1>
     <div id="tela-login">
       <input type="password" id="senha" placeholder="Digite a senha de admin" />
@@ -32,7 +17,7 @@
     </div>
 
     <div id="painel-admin" style="display: none;">
-      <div id="lista"></div>
+      <ul id="lista"></ul>
       <br>
       <button onclick="baixarJSON()">📁 Exportar perguntas</button>
       <br><br>
@@ -41,7 +26,7 @@
   </div>
 
   <script>
-    const senhaCorreta = "meusegredo123";
+    const senhaCorreta = "acampa*";
 
     function verificarSenha() {
       const senha = document.getElementById("senha").value;
@@ -57,17 +42,16 @@
     function carregarPerguntas() {
       const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
       const lista = document.getElementById("lista");
-      if (perguntas.length === 0) {
-        lista.innerHTML = "<p>Nenhuma pergunta registrada.</p>";
-        return;
-      }
 
-      perguntas.reverse().forEach(p => {
-        const div = document.createElement("div");
-        div.className = "bubble";
-        div.innerHTML = `${p.texto}<time>${new Date(p.data).toLocaleString()}</time>`;
-        lista.appendChild(div);
-      });
+      if (perguntas.length === 0) {
+        lista.innerHTML = "<li>Nenhuma pergunta registrada.</li>";
+      } else {
+        perguntas.forEach(p => {
+          const li = document.createElement("li");
+          li.textContent = `${new Date(p.data).toLocaleString()} → ${p.texto}`;
+          lista.appendChild(li);
+        });
+      }
     }
 
     function baixarJSON() {
