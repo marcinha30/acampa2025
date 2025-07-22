@@ -21,7 +21,7 @@
     <div id="painel-admin" style="display: none;">
       <ul id="lista"></ul>
       <br>
-      <button onclick="baixarJSON()">📁 Exportar perguntas</button>
+<button onclick="baixarTXT()">📄 Exportar como TXT</button>
       <br><br>
 <a href="index.html" class="botao-voltar">Voltar</a>
     </div>
@@ -55,14 +55,20 @@
         });
       }
     }
+function baixarTXT() {
+  const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
+  let conteudo = "";
 
-    function baixarJSON() {
-      const dados = localStorage.getItem("perguntas") || "[]";
-      const blob = new Blob([dados], { type: "application/json" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "perguntas.json";
-      link.click();
+  perguntas.forEach((p, i) => {
+    conteudo += `#${i + 1} - ${new Date(p.data).toLocaleString()} → ${p.texto}\n`;
+  });
+
+  const blob = new Blob([conteudo], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "perguntas.txt";
+  link.click();
+}
     }
   </script>
 </body>
