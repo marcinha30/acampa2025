@@ -36,4 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
       feedback.textContent = "Erro ao enviar pergunta. Tente novamente.";
     }
   });
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 04ce9ea234600a453368829aa8ee2c860877e496
