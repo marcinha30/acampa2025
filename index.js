@@ -1,23 +1,31 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("form-pergunta");
   const feedback = document.getElementById("feedback");
+  const perguntaInput = document.getElementById("pergunta");
 
+  // ✅ Desativa o textarea assim que a página carrega
+  perguntaInput.disabled = true;
+
+  // ✅ Ativa o textarea quando o usuário escolhe o gênero
+  const generoRadios = document.querySelectorAll('input[name="genero"]');
+  generoRadios.forEach(radio => {
+    radio.addEventListener("change", () => {
+      perguntaInput.disabled = false;
+      perguntaInput.focus();
+    });
+  });
+
+  // ✅ Envio da pergunta
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    // Desativa o textarea até selecionar o gênero
-perguntaInput.disabled = true;
 
-// Habilita quando escolher menino ou menina
-const generoRadios = document.querySelectorAll('input[name="genero"]');
-generoRadios.forEach(radio => {
-  radio.addEventListener("change", () => {
-    perguntaInput.disabled = false;
-    perguntaInput.focus();
-  });
-});
+    const texto = perguntaInput.value.trim();
+    const generoSelecionado = document.querySelector('input[name="genero"]:checked');
 
-    const texto = document.getElementById("pergunta").value.trim();
-    const genero = document.querySelector('input[name="genero"]:checked')?.value || "Não informado";
+    if (!generoSelecionado) {
+      feedback.textContent = "Por favor, selecione se é menino ou menina.";
+      return;
+    }
 
     if (!texto) {
       feedback.textContent = "Por favor, escreva uma pergunta.";
@@ -26,7 +34,7 @@ generoRadios.forEach(radio => {
 
     const dados = {
       texto: texto,
-      genero: genero,
+      sexo: generoSelecionado.value,
       data: new Date().toISOString()
     };
 
@@ -42,6 +50,7 @@ generoRadios.forEach(radio => {
 
       feedback.textContent = "Pergunta enviada com sucesso!";
       form.reset();
+      perguntaInput.disabled = true; // Bloqueia de novo após envio
     } catch (error) {
       console.error("Erro ao enviar:", error);
       feedback.textContent = "Erro ao enviar pergunta. Tente novamente.";
