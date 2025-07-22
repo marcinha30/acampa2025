@@ -43,38 +43,59 @@
     }
 
     function carregarPerguntas() {
-      const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
-      const listaMeninos = document.getElementById("lista-meninos");
-      const listaMeninas = document.getElementById("lista-meninas");
-      listaMeninos.innerHTML = "<h3>Meninos</h3>";
-      listaMeninas.innerHTML = "<h3>Meninas</h3>";
+  const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
 
-      if (perguntas.length === 0) {
-        listaMeninos.innerHTML += "<li>Nenhuma pergunta registrada.</li>";
-        listaMeninas.innerHTML += "<li>Nenhuma pergunta registrada.</li>";
-      } else {
-        perguntas.forEach(p => {
-          const li = document.createElement("li");
-          li.textContent = `${new Date(p.data).toLocaleString()} → ${p.texto}`;
-          if (p.genero === "menino") {
-            listaMeninos.appendChild(li);
-          } else {
-            listaMeninas.appendChild(li);
+  const meninos = perguntas.filter(p => p.genero === "menino");
+  const meninas = perguntas.filter(p => p.genero === "menina");
+
+  const criarSecao = (titulo, dados) => {
+    const h3 = document.createElement("h3");
+    h3.textContent = titulo;
+    lista.appendChild(h3);
+
+    if (dados.length === 0) {
+      const li = document.createElement("li");
+      li.textContent = "Nenhuma pergunta registrada.";
+      lista.appendChild(li);
+    } else {
+      dados.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = `${new Date(p.data).toLocaleString()} → ${p.texto}`;
+        lista.appendChild(li);
+      });
+    }
+  };
+
+  criarSecao("Meninos", meninos);
+  criarSecao("Meninas", meninas);
+}
           }
         });
       }
     }
 
-    function baixarTXT(genero) {
-      const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]")
-        .filter(p => p.genero === genero);
+   function baixarTXT(genero) {
+  const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
+  const filtradas = perguntas.filter(p => p.genero === genero);
 
-      let conteudo = "";
-      perguntas.forEach((p, i) => {
-        conteudo += `#${i + 1} - ${new Date(p.data).toLocaleString()} → ${p.texto}
-`;
-      });
+  if (filtradas.length === 0) {
+    alert(`Nenhuma pergunta registrada para ${genero}s.`);
+    return;
+  }
 
+  let conteudo = "";
+  filtradas.forEach((p, i) => {
+    conteudo += `#${i + 1} - ${new Date(p.data).toLocaleString()} → ${p.texto}\n`;
+  });
+
+  const blob = new Blob([conteudo], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `perguntas_${genero}.txt`;
+  link.click();
+}
       const blob = new Blob([conteudo], { type: "text/plain" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
