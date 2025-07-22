@@ -1,108 +1,70 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Admin - Perguntas</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .bubble {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      text-align: left;
+      font-size: 15px;
+    }
+    .bubble time {
+      display: block;
+      font-size: 12px;
+      opacity: 0.7;
+      margin-top: 6px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <img src="logo.png" alt="Logo AcampaDentro" style="width: 200px; display: block; margin: 0 auto 20px;">
     <h1>Perguntas Recebidas</h1>
+
     <div id="tela-login">
       <input type="password" id="senha" placeholder="Digite a senha de admin" />
       <button onclick="verificarSenha()">Entrar</button>
       <p id="erro-senha" style="color: red;"></p>
-      <br><br>
-      <a href="index.html" class="botao-voltar">Voltar</a>
     </div>
 
-   <div id="painel-admin" style="display: none;">
-  <ul id="lista"></ul>
-  <br>
-  <button onclick="baixarTXT('menino')">📄 Exportar Meninos (TXT)</button>
-  <button onclick="baixarTXT('menina')">📄 Exportar Meninas (TXT)</button>
-  <br><br>
-  <button onclick="limparPerguntas()" style="background-color: red; color: white;">🗑️ Limpar perguntas</button>
-  <a href="index.html" class="botao-voltar">Voltar</a>
-</div>
+    <div id="painel-admin" style="display: none;">
+      <div id="lista"></div>
+      <br />
+      <a href="index.html">Voltar</a>
+    </div>
+  </div>
 
   <script>
     const senhaCorreta = "acampa*";
 
-    function verificarSenha() {
+    async function verificarSenha() {
       const senha = document.getElementById("senha").value;
-      if (senha === senhaCorreta) {
-        document.getElementById("tela-login").style.display = "none";
-        document.getElementById("painel-admin").style.display = "block";
-        carregarPerguntas();
-      } else {
+      if (senha !== senhaCorreta) {
         document.getElementById("erro-senha").textContent = "Senha incorreta.";
+        return;
       }
-    }
 
-    function carregarPerguntas() {
-  const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
+      document.getElementById("tela-login").style.display = "none";
+      document.getElementById("painel-admin").style.display = "block";
 
-  const meninos = perguntas.filter(p => p.genero === "menino");
-  const meninas = perguntas.filter(p => p.genero === "menina");
+      try {
+        const resp = await fetch("https://script.google.com/macros/s/AKfycbyNaw-cgiqGa8GIkrYHy7ADPm2r8aDHysaKO06mbGRqofj1ZxF3-YravUDI4uYBOopa-A/exec");
+        const perguntas = await resp.json();
+        const lista = document.getElementById("lista");
 
-  const criarSecao = (titulo, dados) => {
-    const h3 = document.createElement("h3");
-    h3.textContent = titulo;
-    lista.appendChild(h3);
-
-    if (dados.length === 0) {
-      const li = document.createElement("li");
-      li.textContent = "Nenhuma pergunta registrada.";
-      lista.appendChild(li);
-    } else {
-      dados.forEach(p => {
-        const li = document.createElement("li");
-        li.textContent = `${new Date(p.data).toLocaleString()} → ${p.texto}`;
-        lista.appendChild(li);
-      });
-    }
-  };
-
-  criarSecao("Meninos", meninos);
-  criarSecao("Meninas", meninas);
-}
-          }
+        perguntas.reverse().forEach(p => {
+          const div = document.createElement("div");
+          div.className = "bubble";
+          div.innerHTML = `${p.texto}<time>${new Date(p.data).toLocaleString()}</time>`;
+          lista.appendChild(div);
         });
-      }
-    }
-
-   function baixarTXT(genero) {
-  const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
-  const filtradas = perguntas.filter(p => p.genero === genero);
-
-  if (filtradas.length === 0) {
-    alert(`Nenhuma pergunta registrada para ${genero}s.`);
-    return;
-  }
-
-  let conteudo = "";
-  filtradas.forEach((p, i) => {
-    conteudo += `#${i + 1} - ${new Date(p.data).toLocaleString()} → ${p.texto}\n`;
-  });
-
-  const blob = new Blob([conteudo], { type: "text/plain" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `perguntas_${genero}.txt`;
-  link.click();
-}
-
-    function limparPerguntas() {
-      if (confirm("Tem certeza que deseja apagar todas as perguntas?")) {
-        localStorage.removeItem("perguntas");
-        document.getElementById("lista-meninos").innerHTML = "<li>Nenhuma pergunta registrada.</li>";
-        document.getElementById("lista-meninas").innerHTML = "<li>Nenhuma pergunta registrada.</li>";
-        alert("Perguntas apagadas com sucesso.");
+      } catch (e) {
+        document.getElementById("lista").innerHTML = "<p>Erro ao carregar perguntas.</p>";
       }
     }
   </script>
