@@ -54,8 +54,22 @@ button:hover {
 .feedback {
   margin-top: 15px;
   font-size: 16px;
-<<<<<<< HEAD
 }
-=======
+
+.botao-voltar {
+  display: inline-block;
+  background-color: transparent;
+  color: white;
+  padding: 10px 20px;
+  border: 2px solid white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 10px;
+  transition: background 0.3s, color 0.3s;
 }
->>>>>>> 04ce9ea234600a453368829aa8ee2c860877e496
+
+.botao-voltar:hover {
+  background-color: white;
+  color: #4B0080;
+}
