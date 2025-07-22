@@ -59,10 +59,40 @@
     }
 function baixarTXT() {
   const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
-  let conteudo = "";
+
+  let txtMeninos = "";
+  let txtMeninas = "";
 
   perguntas.forEach((p, i) => {
-    conteudo += `#${i + 1} - ${new Date(p.data).toLocaleString()} → ${p.texto}\n`;
+    const linha = `#${i + 1} - ${new Date(p.data).toLocaleString()} → ${p.texto}\n`;
+    if (p.genero === "menino") {
+      txtMeninos += linha;
+    } else if (p.genero === "menina") {
+      txtMeninas += linha;
+    }
+  });
+
+  if (txtMeninos) {
+    const blobM = new Blob([txtMeninos], { type: "text/plain" });
+    const linkM = document.createElement("a");
+    linkM.href = URL.createObjectURL(blobM);
+    linkM.download = "perguntas_meninos.txt";
+    linkM.click();
+  }
+
+  if (txtMeninas) {
+    const blobF = new Blob([txtMeninas], { type: "text/plain" });
+    const linkF = document.createElement("a");
+    linkF.href = URL.createObjectURL(blobF);
+    linkF.download = "perguntas_meninas.txt";
+    linkF.click();
+  }
+
+  if (!txtMeninos && !txtMeninas) {
+    alert("Nenhuma pergunta para exportar.");
+  }
+}
+
   });
 
   const blob = new Blob([conteudo], { type: "text/plain" });
