@@ -10,6 +10,8 @@
   <div class="container">
     <img src="logo.png" alt="Logo AcampaDentro" style="width: 200px; display: block; margin: 0 auto 20px;">
     <h1>Perguntas Recebidas</h1>
+
+    <!-- Login -->
     <div id="tela-login">
       <input type="password" id="senha" placeholder="Digite a senha de admin" />
       <button onclick="verificarSenha()">Entrar</button>
@@ -18,14 +20,15 @@
       <a href="index.html" class="botao-voltar">Voltar</a>
     </div>
 
+    <!-- Painel admin -->
     <div id="painel-admin" style="display: none;">
       <ul id="lista"></ul>
       <br>
-<button onclick="baixarTXT()">📄 Exportar como TXT</button>
+      <button onclick="baixarTXT()">📄 Exportar por grupo</button>
       <br><br>
-  <button onclick="limparPerguntas()" style="background-color: red; color: white;">🗑️ Limpar perguntas</button>
+      <button onclick="limparPerguntas()" style="background-color: red; color: white;">🗑️ Limpar perguntas</button>
       <br><br>
-<a href="index.html" class="botao-voltar">Voltar</a>
+      <a href="index.html" class="botao-voltar">Voltar</a>
     </div>
   </div>
 
@@ -46,67 +49,61 @@
     function carregarPerguntas() {
       const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
       const lista = document.getElementById("lista");
+      lista.innerHTML = "";
 
       if (perguntas.length === 0) {
         lista.innerHTML = "<li>Nenhuma pergunta registrada.</li>";
       } else {
-        perguntas.forEach(p => {
+        perguntas.forEach((p, i) => {
           const li = document.createElement("li");
-          li.textContent = `${new Date(p.data).toLocaleString()} → ${p.texto}`;
+          li.textContent = `(${p.genero}) ${new Date(p.data).toLocaleString()} → ${p.texto}`;
           lista.appendChild(li);
         });
       }
     }
-function baixarTXT() {
-  const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
 
-  let txtMeninos = "";
-  let txtMeninas = "";
+    function baixarTXT() {
+      const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
 
-  perguntas.forEach((p, i) => {
-    const linha = `#${i + 1} - ${new Date(p.data).toLocaleString()} → ${p.texto}\n`;
-    if (p.genero === "menino") {
-      txtMeninos += linha;
-    } else if (p.genero === "menina") {
-      txtMeninas += linha;
+      let txtMeninos = "";
+      let txtMeninas = "";
+
+      perguntas.forEach((p, i) => {
+        const linha = `#${i + 1} - ${new Date(p.data).toLocaleString()} → ${p.texto}\n`;
+        if (p.genero === "menino") {
+          txtMeninos += linha;
+        } else if (p.genero === "menina") {
+          txtMeninas += linha;
+        }
+      });
+
+      if (txtMeninos) {
+        const blobM = new Blob([txtMeninos], { type: "text/plain" });
+        const linkM = document.createElement("a");
+        linkM.href = URL.createObjectURL(blobM);
+        linkM.download = "perguntas_meninos.txt";
+        linkM.click();
+      }
+
+      if (txtMeninas) {
+        const blobF = new Blob([txtMeninas], { type: "text/plain" });
+        const linkF = document.createElement("a");
+        linkF.href = URL.createObjectURL(blobF);
+        linkF.download = "perguntas_meninas.txt";
+        linkF.click();
+      }
+
+      if (!txtMeninos && !txtMeninas) {
+        alert("Nenhuma pergunta para exportar.");
+      }
     }
-  });
 
-  if (txtMeninos) {
-    const blobM = new Blob([txtMeninos], { type: "text/plain" });
-    const linkM = document.createElement("a");
-    linkM.href = URL.createObjectURL(blobM);
-    linkM.download = "perguntas_meninos.txt";
-    linkM.click();
-  }
-
-  if (txtMeninas) {
-    const blobF = new Blob([txtMeninas], { type: "text/plain" });
-    const linkF = document.createElement("a");
-    linkF.href = URL.createObjectURL(blobF);
-    linkF.download = "perguntas_meninas.txt";
-    linkF.click();
-  }
-
-  if (!txtMeninos && !txtMeninas) {
-    alert("Nenhuma pergunta para exportar.");
-  }
-}
-
-  });
-
-  const blob = new Blob([conteudo], { type: "text/plain" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "perguntas.txt";
-  link.click();
-}
     function limparPerguntas() {
       if (confirm("Tem certeza que deseja apagar todas as perguntas?")) {
         localStorage.removeItem("perguntas");
         document.getElementById("lista").innerHTML = "<li>Nenhuma pergunta registrada.</li>";
         alert("Perguntas apagadas com sucesso.");
-    }
+      }
     }
   </script>
 </body>
