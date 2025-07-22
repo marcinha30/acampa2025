@@ -3,27 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <title>Admin - Perguntas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <h1>Perguntas Recebidas</h1>
-    <ul id="lista"></ul>
-    <br>
-    <a href="index.html">Voltar</a>
-  </div>
-  <script>
-    const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
-    const lista = document.getElementById("lista");
+    <div id="tela-login">
+      <input type="password" id="senha" placeholder="Digite a senha de admin" />
+      <button onclick="verificarSenha()">Entrar</button>
+      <p id="erro-senha" style="color: red;"></p>
+    </div>
 
-    if (perguntas.length === 0) {
-      lista.innerHTML = "<li>Nenhuma pergunta registrada.</li>";
-    } else {
-      perguntas.forEach(p => {
-        const li = document.createElement("li");
-        li.textContent = `${new Date(p.data).toLocaleString()} → ${p.texto}`;
-        lista.appendChild(li);
-      });
+    <div id="painel-admin" style="display: none;">
+      <ul id="lista"></ul>
+      <br>
+      <button onclick="baixarJSON()">📁 Exportar perguntas</button>
+      <br><br>
+      <a href="index.html">Voltar</a>
+    </div>
+  </div>
+
+  <script>
+    const senhaCorreta = "acampa2025";
+
+    function verificarSenha() {
+      const senha = document.getElementById("senha").value;
+      if (senha === senhaCorreta) {
+        document.getElementById("tela-login").style.display = "none";
+        document.getElementById("painel-admin").style.display = "block";
+        carregarPerguntas();
+      } else {
+        document.getElementById("erro-senha").textContent = "Senha incorreta.";
+      }
+    }
+
+    function carregarPerguntas() {
+      const perguntas = JSON.parse(localStorage.getItem("perguntas") || "[]");
+      const lista = document.getElementById("lista");
+
+      if (perguntas.length === 0) {
+        lista.innerHTML = "<li>Nenhuma pergunta registrada.</li>";
+      } else {
+        perguntas.forEach(p => {
+          const li = document.createElement("li");
+          li.textContent = `${new Date(p.data).toLocaleString()} → ${p.texto}`;
+          lista.appendChild(li);
+        });
+      }
+    }
+
+    function baixarJSON() {
+      const dados = localStorage.getItem("perguntas") || "[]";
+      const blob = new Blob([dados], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "perguntas.json";
+      link.click();
     }
   </script>
 </body>
