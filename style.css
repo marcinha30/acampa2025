@@ -69,4 +69,9 @@ ul li {
   padding: 10px;
   border-radius: 8px;
 }
+a.voltar {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
 
