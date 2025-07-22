@@ -96,12 +96,6 @@
   link.download = `perguntas_${genero}.txt`;
   link.click();
 }
-      const blob = new Blob([conteudo], { type: "text/plain" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `perguntas_${genero}.txt`;
-      link.click();
-    }
 
     function limparPerguntas() {
       if (confirm("Tem certeza que deseja apagar todas as perguntas?")) {
