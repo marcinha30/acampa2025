@@ -21,5 +21,15 @@
     <a href="admin.html" class="botao-voltar">Acessar perguntas (admin)</a>
   </div>
   <script src="index.js"></script>
+  <script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(location.search);
+    const genero = params.get('genero');
+    if (genero) {
+      document.querySelector(`input[name="genero"][value="${genero.toLowerCase()}"]`).checked = true;
+    }
+  });
+</script>
+
 </body>
 </html>
