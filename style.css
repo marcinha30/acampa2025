@@ -90,13 +90,21 @@ ul li {
   background-color: white;
   color: #4B0080;
 }
-select {
-  width: 100%;
-  height: 40px;
-  border-radius: 8px;
+button {
+  background: linear-gradient(135deg, #ffcc00, #ffd84d);
+  color: #1f2041;
   border: none;
-  margin-bottom: 15px;
-  padding: 10px;
-  font-family: sans-serif;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.3s, background 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #ffe85f, #fff176);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
