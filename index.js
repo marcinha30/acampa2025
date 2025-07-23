@@ -1,31 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("form-pergunta");
   const feedback = document.getElementById("feedback");
-  const perguntaInput = document.getElementById("pergunta");
 
-  // ✅ Desativa o textarea assim que a página carrega
-  perguntaInput.disabled = true;
-
-  // ✅ Ativa o textarea quando o usuário escolhe o gênero
-  const generoRadios = document.querySelectorAll('input[name="genero"]');
-  generoRadios.forEach(radio => {
-    radio.addEventListener("change", () => {
-      perguntaInput.disabled = false;
-      perguntaInput.focus();
-    });
-  });
-
-  // ✅ Envio da pergunta
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const texto = perguntaInput.value.trim();
-    const generoSelecionado = document.querySelector('input[name="genero"]:checked');
-
-    if (!generoSelecionado) {
-      feedback.textContent = "Por favor, selecione se é menino ou menina.";
-      return;
-    }
+    const texto = document.getElementById("pergunta").value.trim();
+    const genero = document.querySelector('input[name="genero"]:checked')?.value || "Não informado";
 
     if (!texto) {
       feedback.textContent = "Por favor, escreva uma pergunta.";
@@ -34,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const dados = {
       texto: texto,
-      sexo: generoSelecionado.value,
+      genero: genero,
       data: new Date().toISOString()
     };
 
@@ -50,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       feedback.textContent = "Pergunta enviada com sucesso!";
       form.reset();
-      perguntaInput.disabled = true; // Bloqueia de novo após envio
     } catch (error) {
       console.error("Erro ao enviar:", error);
       feedback.textContent = "Erro ao enviar pergunta. Tente novamente.";
