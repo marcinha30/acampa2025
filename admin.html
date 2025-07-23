@@ -20,6 +20,9 @@
       opacity: 0.7;
       margin-top: 6px;
     }
+    .genero-container {
+      margin-bottom: 30px;
+    }
   </style>
 </head>
 <body>
@@ -33,7 +36,18 @@
     </div>
 
     <div id="painel-admin" style="display: none;">
-      <div id="lista"></div>
+      <div class="genero-container">
+        <h2>👦 Meninos</h2>
+        <div id="lista-menino"></div>
+        <button onclick="exportarGenero('menino')">📄 Exportar perguntas dos meninos</button>
+      </div>
+
+      <div class="genero-container">
+        <h2>👧 Meninas</h2>
+        <div id="lista-menina"></div>
+        <button onclick="exportarGenero('menina')">📄 Exportar perguntas das meninas</button>
+      </div>
+
       <br />
       <a href="index.html">Voltar</a>
     </div>
@@ -41,6 +55,7 @@
 
   <script>
     const senhaCorreta = "acampa*";
+    let todasPerguntas = [];
 
     async function verificarSenha() {
       const senha = document.getElementById("senha").value;
@@ -55,17 +70,40 @@
       try {
         const resp = await fetch("https://script.google.com/macros/s/AKfycbyNaw-cgiqGa8GIkrYHy7ADPm2r8aDHysaKO06mbGRqofj1ZxF3-YravUDI4uYBOopa-A/exec");
         const perguntas = await resp.json();
-        const lista = document.getElementById("lista");
+        todasPerguntas = perguntas.reverse();
 
-        perguntas.reverse().forEach(p => {
+        const listaMenino = document.getElementById("lista-menino");
+        const listaMenina = document.getElementById("lista-menina");
+
+        todasPerguntas.forEach(p => {
           const div = document.createElement("div");
           div.className = "bubble";
-          div.innerHTML = `<strong>${p.genero}</strong><br>${p.texto}<time>${new Date(p.data).toLocaleString()}</time>`;
-          lista.appendChild(div);
+          div.innerHTML = `${p.texto}<time>${new Date(p.data).toLocaleString()}</time>`;
+
+          if (p.genero === "menino") {
+            listaMenino.appendChild(div);
+          } else if (p.genero === "menina") {
+            listaMenina.appendChild(div);
+          }
         });
       } catch (e) {
-        document.getElementById("lista").innerHTML = "<p>Erro ao carregar perguntas.</p>";
+        document.getElementById("lista-menino").innerHTML = "<p>Erro ao carregar perguntas.</p>";
+        document.getElementById("lista-menina").innerHTML = "<p>Erro ao carregar perguntas.</p>";
       }
+    }
+
+    function exportarGenero(genero) {
+      const perguntasFiltradas = todasPerguntas.filter(p => p.genero === genero);
+      const conteudo = perguntasFiltradas.map(p => `- ${p.texto}`).join("\n");
+      const blob = new Blob([conteudo], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = genero + "_perguntas.txt";
+      link.click();
+
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
