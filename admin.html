@@ -1,109 +1,95 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Admin - Perguntas</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .bubble {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 15px;
-      padding: 12px 16px;
-      margin-bottom: 12px;
-      text-align: left;
-      font-size: 15px;
-    }
-    .bubble time {
-      display: block;
-      font-size: 12px;
-      opacity: 0.7;
-      margin-top: 6px;
-    }
-    .genero-container {
-      margin-bottom: 30px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
+    <img src="logo.png" alt="Logo AcampaDentro" style="width: 200px; display: block; margin: 0 auto 20px;">
     <h1>Perguntas Recebidas</h1>
-
     <div id="tela-login">
       <input type="password" id="senha" placeholder="Digite a senha de admin" />
       <button onclick="verificarSenha()">Entrar</button>
       <p id="erro-senha" style="color: red;"></p>
+      <br><br>
+      <a href="index.html" class="botao-voltar">Voltar</a>
     </div>
 
     <div id="painel-admin" style="display: none;">
-      <div class="genero-container">
-        <h2>👦 Meninos</h2>
-        <div id="lista-menino"></div>
-        <button onclick="exportarGenero('menino')">📄 Exportar perguntas dos meninos</button>
-      </div>
-
-      <div class="genero-container">
-        <h2>👧 Meninas</h2>
-        <div id="lista-menina"></div>
-        <button onclick="exportarGenero('menina')">📄 Exportar perguntas das meninas</button>
-      </div>
-
-      <br />
-      <a href="index.html">Voltar</a>
+      <ul id="lista-meninos"><h3>Meninos</h3></ul>
+      <ul id="lista-meninas"><h3>Meninas</h3></ul>
+      <br>
+      <button onclick="baixarTXT('menino')">📄 Exportar Meninos (TXT)</button>
+      <button onclick="baixarTXT('menina')">📄 Exportar Meninas (TXT)</button>
+      <br><br>
+      <a href="index.html" class="botao-voltar">Voltar</a>
     </div>
   </div>
 
   <script>
     const senhaCorreta = "acampa*";
-    let todasPerguntas = [];
+    let perguntasAPI = [];
 
     async function verificarSenha() {
       const senha = document.getElementById("senha").value;
-      if (senha !== senhaCorreta) {
+      if (senha === senhaCorreta) {
+        document.getElementById("tela-login").style.display = "none";
+        document.getElementById("painel-admin").style.display = "block";
+        await carregarPerguntas();
+      } else {
         document.getElementById("erro-senha").textContent = "Senha incorreta.";
-        return;
-      }
-
-      document.getElementById("tela-login").style.display = "none";
-      document.getElementById("painel-admin").style.display = "block";
-
-      try {
-        const resp = await fetch("https://script.google.com/macros/s/AKfycbyNaw-cgiqGa8GIkrYHy7ADPm2r8aDHysaKO06mbGRqofj1ZxF3-YravUDI4uYBOopa-A/exec");
-        const perguntas = await resp.json();
-        todasPerguntas = perguntas.reverse();
-
-        const listaMenino = document.getElementById("lista-menino");
-        const listaMenina = document.getElementById("lista-menina");
-
-        todasPerguntas.forEach(p => {
-          const div = document.createElement("div");
-          div.className = "bubble";
-          div.innerHTML = `${p.texto}<time>${new Date(p.data).toLocaleString()}</time>`;
-
-          if (p.genero === "menino") {
-            listaMenino.appendChild(div);
-          } else if (p.genero === "menina") {
-            listaMenina.appendChild(div);
-          }
-        });
-      } catch (e) {
-        document.getElementById("lista-menino").innerHTML = "<p>Erro ao carregar perguntas.</p>";
-        document.getElementById("lista-menina").innerHTML = "<p>Erro ao carregar perguntas.</p>";
       }
     }
 
-    function exportarGenero(genero) {
-      const perguntasFiltradas = todasPerguntas.filter(p => p.genero === genero);
-      const conteudo = perguntasFiltradas.map(p => `- ${p.texto}`).join("\n");
-      const blob = new Blob([conteudo], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
+    async function carregarPerguntas() {
+      try {
+        const resposta = await fetch("https://script.google.com/macros/s/AKfycbyNaw-cgiqGa8GIkrYHy7ADPm2r8aDHysaKO06mbGRqofj1ZxF3-YravUDI4uYBOopa-A/exec");
+        const dados = await resposta.json();
+        perguntasAPI = dados.reverse();
 
+        const listaMeninos = document.getElementById("lista-meninos");
+        const listaMeninas = document.getElementById("lista-meninas");
+
+        listaMeninos.innerHTML = "<h3>Meninos</h3>";
+        listaMeninas.innerHTML = "<h3>Meninas</h3>";
+
+        if (perguntasAPI.length === 0) {
+          listaMeninos.innerHTML += "<li>Nenhuma pergunta registrada.</li>";
+          listaMeninas.innerHTML += "<li>Nenhuma pergunta registrada.</li>";
+        } else {
+          perguntasAPI.forEach(p => {
+            const li = document.createElement("li");
+            li.textContent = `${new Date(p.data).toLocaleString()} → ${p.texto}`;
+            if (p.genero === "menino") {
+              listaMeninos.appendChild(li);
+            } else {
+              listaMeninas.appendChild(li);
+            }
+          });
+        }
+      } catch (error) {
+        document.getElementById("lista-meninos").innerHTML = "<li>Erro ao carregar perguntas.</li>";
+        document.getElementById("lista-meninas").innerHTML = "<li>Erro ao carregar perguntas.</li>";
+      }
+    }
+
+    function baixarTXT(genero) {
+      const perguntas = perguntasAPI.filter(p => p.genero === genero);
+
+      let conteudo = "";
+      perguntas.forEach((p, i) => {
+        conteudo += `#${i + 1} - ${new Date(p.data).toLocaleString()} → ${p.texto}
+`;
+      });
+
+      const blob = new Blob([conteudo], { type: "text/plain" });
       const link = document.createElement("a");
-      link.href = url;
-      link.download = genero + "_perguntas.txt";
+      link.href = URL.createObjectURL(blob);
+      link.download = `perguntas_${genero}.txt`;
       link.click();
-
-      URL.revokeObjectURL(url);
     }
   </script>
 </body>
