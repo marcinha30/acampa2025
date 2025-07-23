@@ -1,65 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <title>AcampaDentro Teens</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Acampa Teens</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <img src="logo.png" alt="Logo AcampaDentro" style="width: 200px; display: block; margin: 0 auto 20px;">
-    <h1>AcampaDentro Teens 👑</h1>
-    <p>Envie sua pergunta anônima 👇</p>
-
-    <select id="genero" required>
-      <option value="">Selecione seu gênero</option>
-      <option value="menino">👦 Menino</option>
-      <option value="menina">👧 Menina</option>
-    </select>
-
-    <textarea id="pergunta" placeholder="Digite sua pergunta..." required></textarea>
-    <button onclick="enviarPergunta()">Enviar</button>
-    <p class="feedback" id="feedback"></p>
-    <br />
-    <a href="admin.html" style="display: inline-block; padding: 10px 20px; background: #fff; color: #4B0082; border-radius: 8px; text-decoration: none; font-weight: bold;">Acessar perguntas (admin)</a>
+    <h1>Deixe sua pergunta</h1>
+    <form id="form-pergunta">
+      <label><input type="radio" name="genero" value="menino"> Menino</label>
+      <label><input type="radio" name="genero" value="menina"> Menina</label>
+      <textarea id="pergunta" placeholder="Digite sua pergunta..."></textarea>
+      <button type="submit">Enviar</button>
+      <p id="feedback" class="feedback"></p>
+    </form>
+    <br>
+    <a href="admin.html" class="botao-voltar">Acessar perguntas (admin)</a>
   </div>
-
-  <script>
-    async function enviarPergunta() {
-      const texto = document.getElementById("pergunta").value.trim();
-      const genero = document.getElementById("genero").value;
-      const feedback = document.getElementById("feedback");
-
-      if (!texto || !genero) {
-        feedback.textContent = "Preencha todos os campos antes de enviar.";
-        return;
-      }
-
-      const data = {
-        texto: texto,
-        genero: genero,
-        data: new Date().toISOString()
-      };
-
-      try {
-        const resposta = await fetch("https://script.google.com/macros/s/AKfycbyNaw-cgiqGa8GIkrYHy7ADPm2r8aDHysaKO06mbGRqofj1ZxF3-YravUDI4uYBOopa-A/exec", {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: { "Content-Type": "application/json" }
-        });
-
-        if (resposta.ok) {
-          feedback.textContent = "Pergunta enviada com sucesso!";
-          document.getElementById("pergunta").value = "";
-          document.getElementById("genero").value = "";
-        } else {
-          feedback.textContent = "Erro ao enviar. Tente novamente.";
-        }
-      } catch (e) {
-        feedback.textContent = "Erro de conexão. Tente novamente.";
-      }
-    }
-  </script>
+  <script src="index.js"></script>
 </body>
 </html>
