@@ -11,6 +11,13 @@
     <img src="logo.png" alt="Logo AcampaDentro" style="width: 200px; display: block; margin: 0 auto 20px;">
     <h1>AcampaDentro Teens 👑</h1>
     <p>Envie sua pergunta anônima 👇</p>
+
+    <select id="genero" required>
+      <option value="">Selecione seu gênero</option>
+      <option value="menino">👦 Menino</option>
+      <option value="menina">👧 Menina</option>
+    </select>
+
     <textarea id="pergunta" placeholder="Digite sua pergunta..." required></textarea>
     <button onclick="enviarPergunta()">Enviar</button>
     <p class="feedback" id="feedback"></p>
@@ -20,19 +27,19 @@
 
   <script>
     async function enviarPergunta() {
-      const textarea = document.getElementById("pergunta");
-      const texto = textarea.value.trim();
+      const texto = document.getElementById("pergunta").value.trim();
+      const genero = document.getElementById("genero").value;
       const feedback = document.getElementById("feedback");
 
-      if (!texto) {
-        feedback.textContent = "Digite uma pergunta antes de enviar.";
+      if (!texto || !genero) {
+        feedback.textContent = "Preencha todos os campos antes de enviar.";
         return;
       }
 
       const data = {
         texto: texto,
-        data: new Date().toISOString(),
-        genero: ""
+        genero: genero,
+        data: new Date().toISOString()
       };
 
       try {
@@ -44,7 +51,8 @@
 
         if (resposta.ok) {
           feedback.textContent = "Pergunta enviada com sucesso!";
-          textarea.value = "";
+          document.getElementById("pergunta").value = "";
+          document.getElementById("genero").value = "";
         } else {
           feedback.textContent = "Erro ao enviar. Tente novamente.";
         }
