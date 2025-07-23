@@ -60,7 +60,7 @@
         perguntas.reverse().forEach(p => {
           const div = document.createElement("div");
           div.className = "bubble";
-          div.innerHTML = `${p.texto}<time>${new Date(p.data).toLocaleString()}</time>`;
+          div.innerHTML = `<strong>${p.genero}</strong><br>${p.texto}<time>${new Date(p.data).toLocaleString()}</time>`;
           lista.appendChild(div);
         });
       } catch (e) {
